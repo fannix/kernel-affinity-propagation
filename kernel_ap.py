@@ -29,13 +29,15 @@ def get_kernel_matrix(li):
     Get kernel matrix from a list of strings.
     """
 
-    order = 3
-    gap = 0
+    order = 6
+    gap = 2
     reverse = False
     charfeat = StringCharFeatures(RAWBYTE)
     charfeat.set_features(li)
+    #Get alphabet.
     feats_train = StringUlongFeatures(charfeat.get_alphabet())
     feats_train.obtain_from_char(charfeat, order-1, order, gap, reverse)
+    #CommUlongStringKernel needs sorted features.
     preproc = SortUlongString()
     preproc.init(feats_train)
     feats_train.add_preproc(preproc)
@@ -43,6 +45,7 @@ def get_kernel_matrix(li):
 
     use_sign = False
 
+    #Compute kernel matrix between train features.
     kernel = CommUlongStringKernel(feats_train, feats_train, use_sign)
     km_train = kernel.get_kernel_matrix()
     return km_train
